@@ -4,7 +4,7 @@ Infinite Codex separates reasoning, persistence, and execution.
 
 ## 1. Chat owns reasoning
 
-The active Chat session is the only coding agent in the default architecture. It:
+The active Chat session owns reasoning and repository edits. It:
 
 - interprets user intent;
 - reads the repository;
@@ -14,7 +14,7 @@ The active Chat session is the only coding agent in the default architecture. It
 - diagnoses runner output;
 - decides whether another iteration is required.
 
-This keeps the user's intent and the engineering loop in one context rather than handing the task to a second autonomous agent.
+This keeps the user's intent and the engineering loop in one continuous context.
 
 ## 2. GitHub owns durable state
 
