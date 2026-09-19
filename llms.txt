@@ -1,0 +1,19 @@
+# Infinite Codex
+
+> Turn ChatGPT into a Codex-like repository development loop using GitHub for persistent state and GitHub Actions as the execution computer.
+
+Infinite Codex is an independent open-source Agent Skill and repository template. Chat remains the sole reasoning/coding agent. GitHub stores durable code and history. GitHub Actions runs committed build, test, lint, benchmark, and reproduction missions. The Actions runner does not call a second LLM coding agent.
+
+Important clarification: Infinite Codex does not provide unlimited OpenAI Codex usage, alter Codex quota, or bypass OpenAI limits. “Infinite Codex” is the project name.
+
+Keywords: ChatGPT coding agent, Codex alternative, GitHub Actions coding, AI coding, Agent Skills, GitHub coding workflow, ChatGPT GitHub, Codex-like development, coding agent without Codex quota.
+
+## Core files
+
+- README.md — human overview and setup
+- AGENTS.md — repository discovery entry point for AI agents
+- .agents/skills/infinite-codex/SKILL.md — canonical agent policy
+- .github/workflows/infinite-codex.yml — disposable execution runner
+- .infinite-codex/mission.sh — task-specific verification mission
+- .infinite-codex/runner.sh — result capture and artifact protocol
+- DISCLAIMER.md — independent-project and quota clarification

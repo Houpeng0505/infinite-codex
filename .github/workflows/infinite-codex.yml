@@ -1,0 +1,86 @@
+name: Infinite Codex Runner
+
+on:
+  push:
+    branches:
+      - 'infinite-codex/**'
+  workflow_dispatch:
+    inputs:
+      note:
+        description: 'Optional human-readable reason for this run'
+        required: false
+        type: string
+
+# The runner executes committed code but does not own repository decisions.
+permissions:
+  contents: read
+
+concurrency:
+  group: infinite-codex-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  execute:
+    name: Execute committed mission
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout committed revision
+        uses: actions/checkout@v7
+
+      - name: Validate Infinite Codex files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f .infinite-codex/runner.sh
+          test -f .infinite-codex/mission.sh
+          bash -n .infinite-codex/runner.sh
+          bash -n .infinite-codex/mission.sh
+          chmod +x .infinite-codex/runner.sh .infinite-codex/mission.sh
+
+      - name: Execute mission
+        shell: bash
+        run: .infinite-codex/runner.sh
+
+      - name: Publish run summary
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f .infinite-codex/out/summary.md ]]; then
+            cat .infinite-codex/out/summary.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo '# Infinite Codex' >> "$GITHUB_STEP_SUMMARY"
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo 'The runner did not produce a summary.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload execution artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: infinite-codex-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .infinite-codex/out/run.log
+            .infinite-codex/out/result.json
+            .infinite-codex/out/summary.md
+            .infinite-codex/out/exit-code.txt
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Propagate mission result
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f .infinite-codex/out/exit-code.txt ]]; then
+            echo 'Missing mission exit code.' >&2
+            exit 1
+          fi
+          code="$(cat .infinite-codex/out/exit-code.txt)"
+          if ! [[ "$code" =~ ^[0-9]+$ ]]; then
+            echo "Invalid mission exit code: $code" >&2
+            exit 1
+          fi
+          exit "$code"
