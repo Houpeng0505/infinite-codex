@@ -10,11 +10,11 @@
 
 **Verified end to end:** [live GitHub Actions demo](https://github.com/Houpeng0505/infinite-codex/actions/runs/35410622690) — a committed mission ran on a fresh GitHub-hosted VM, the self-test passed, and the execution artifact was uploaded.
 
-Infinite Codex is a tiny open-source workflow that lets a capable ChatGPT session do repository work in a Codex-like loop **without running a second coding agent inside GitHub Actions**.
+Infinite Codex is a tiny open-source workflow that lets a capable ChatGPT session do repository work in a Codex-like development loop.
 
 Chat reasons and edits. GitHub persists code and history. GitHub Actions executes the real build, test, benchmark, or reproduction commands. Chat reads the result and decides the next edit.
 
-## The idea
+## How it works
 
 ~~~text
                   Infinite Codex
@@ -44,18 +44,12 @@ Chat reasons and edits. GitHub persists code and history. GitHub Actions execute
                                       +--> next edit
 ~~~
 
-No agent-in-agent stack. No model call from the runner. No autonomous LLM hidden inside CI.
-
-## Why
-
-A coding agent needs two things:
+A coding workflow needs two things:
 
 1. **Intelligence** — understand the task, inspect code, plan changes, and diagnose failures.
 2. **A computer** — install dependencies, run tests, build, benchmark, and execute scripts.
 
-A capable Chat session already provides the first part. GitHub Actions can provide the second.
-
-Infinite Codex connects them with ordinary Git state.
+A capable Chat session provides the reasoning layer. GitHub Actions provides disposable compute. Git provides the persistent handoff between them.
 
 ## Requirements
 
@@ -108,7 +102,6 @@ Use the Infinite Codex skill in this repository.
 Implement the requested change on an infinite-codex/* branch.
 Keep .infinite-codex/mission.sh focused on commands that prove the change works.
 After each commit, inspect the GitHub Actions result and iterate until the mission passes.
-Do not delegate coding work to another AI agent.
 ~~~
 
 That is the product.
@@ -134,7 +127,7 @@ permissions:
   contents: read
 ~~~
 
-It does not commit changes, open pull requests, or call an AI model. Chat owns those decisions.
+Repository edits stay in Chat. The Actions runner executes the committed mission and returns evidence.
 
 ## Example missions
 
@@ -169,21 +162,14 @@ set -euo pipefail
 
 More examples are in the **examples/** directory.
 
-## Why not put Codex, Claude Code, or another agent inside Actions?
+## What this is good for
 
-Because that is a different architecture.
-
-~~~text
-Agent-in-Actions                 Infinite Codex
-----------------                 --------------
-Chat                             Chat
-  |                                |
-second coding agent              GitHub
-  |                                |
-runner                           Actions runner
-~~~
-
-Infinite Codex treats GitHub Actions as a **computer**, not an agent. The reasoning loop stays in the Chat conversation that already understands the user's intent.
+- repository changes that need real tests rather than guessed correctness;
+- dependency installation that does not fit the Chat sandbox;
+- Linux-only reproduction;
+- builds, linters, formatters, type checks, benchmarks, and integration tests;
+- preserving an auditable Git history while Chat iterates;
+- using a disposable clean environment to catch “works on my machine” assumptions.
 
 ## Security model
 
@@ -204,9 +190,9 @@ Read [SECURITY.md](SECURITY.md) before adding secrets, write permissions, deploy
 
 The canonical skill is [.agents/skills/infinite-codex/SKILL.md](.agents/skills/infinite-codex/SKILL.md). **AGENTS.md** is the lightweight repository entry point.
 
-The non-negotiable rule is:
+Its core operating model is simple:
 
-> **Chat owns reasoning. Actions owns execution. Do not silently insert another coding agent between them.**
+> **Chat owns reasoning and repository edits. GitHub Actions executes the committed mission and returns evidence.**
 
 ## FAQ
 
