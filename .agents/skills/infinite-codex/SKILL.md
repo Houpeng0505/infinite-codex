@@ -1,6 +1,6 @@
 ---
 name: infinite-codex
-description: Use Chat as the sole coding agent while GitHub stores persistent repository state and GitHub Actions provides disposable execution for builds, tests, scripts, and verification. Use for repository engineering tasks that need real execution and iterative verification without delegating coding to another LLM or coding agent inside CI.
+description: Use Chat as the coding agent while GitHub stores persistent repository state and GitHub Actions provides disposable execution for builds, tests, scripts, and verification. Use for repository engineering tasks that need real execution and iterative verification.
 ---
 
 # Infinite Codex
@@ -13,7 +13,6 @@ The architecture is deliberately simple:
 - **GitHub repository = persistent workspace and history**
 - **GitHub Actions = disposable computer**
 
-Do not introduce another AI agent unless the user explicitly asks for one.
 
 ## Preconditions
 
@@ -76,11 +75,9 @@ For implementation tasks:
 
 ## Rules
 
-### One agent
+### Responsibilities
 
-Chat owns reasoning, planning, debugging, and implementation decisions.
-
-Never add Codex CLI, Claude Code, Gemini CLI, OpenHands, Aider, or another LLM-driven coding agent to the GitHub Actions job merely to perform the task. That defeats this architecture.
+Chat owns reasoning, planning, debugging, implementation decisions, and repository edits. GitHub Actions executes the committed verification mission and returns evidence.
 
 ### Actions is a computer
 
