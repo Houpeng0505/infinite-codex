@@ -21,6 +21,9 @@ concurrency:
 
 jobs:
   execute:
+    # Creating an infinite-codex/* branch emits a push event with created=true.
+    # Skip that empty branch-creation event; execute after an actual commit or manual dispatch.
+    if: github.event_name == 'workflow_dispatch' || github.event.created == false
     name: Execute committed mission
     runs-on: ubuntu-latest
     timeout-minutes: 30

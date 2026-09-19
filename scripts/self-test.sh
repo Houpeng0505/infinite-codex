@@ -40,6 +40,7 @@ grep -q "'infinite-codex/\*\*'" .github/workflows/infinite-codex.yml
 grep -q 'actions/checkout@v7' .github/workflows/infinite-codex.yml
 grep -q 'actions/upload-artifact@v7' .github/workflows/infinite-codex.yml
 grep -q 'include-hidden-files: true' .github/workflows/infinite-codex.yml
+grep -q "github.event.created == false" .github/workflows/infinite-codex.yml
 grep -q '.agents/skills/infinite-codex/SKILL.md' AGENTS.md
 
 if grep -Eqi 'uses:.*(codex|claude|aider|openhands)|OPENAI_API_KEY|ANTHROPIC_API_KEY' .github/workflows/infinite-codex.yml; then
